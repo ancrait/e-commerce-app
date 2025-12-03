@@ -1,8 +1,8 @@
 
 CREATE TABLE category (
-                          id BIGINT NOT NULL PRIMARY KEY,
-                          name VARCHAR(255),
-                          description VARCHAR(255)
+    id BIGINT NOT NULL PRIMARY KEY,
+    name VARCHAR(255),
+    description VARCHAR(255)
 );
 
 CREATE TABLE product (
