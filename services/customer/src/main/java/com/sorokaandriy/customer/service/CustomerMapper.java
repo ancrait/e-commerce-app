@@ -4,8 +4,9 @@ import com.sorokaandriy.customer.model.Customer;
 import com.sorokaandriy.customer.dto.CustomerRequest;
 import com.sorokaandriy.customer.dto.CustomerResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CustomerMapper {
     public Customer fromRequestToCustomer(CustomerRequest request) {
         return Customer.builder()
