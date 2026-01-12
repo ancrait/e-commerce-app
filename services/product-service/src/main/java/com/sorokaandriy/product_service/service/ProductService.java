@@ -6,6 +6,8 @@ import com.sorokaandriy.product_service.dto.ProductPurchaseResponse;
 import com.sorokaandriy.product_service.dto.ProductRequest;
 import com.sorokaandriy.product_service.dto.ProductResponse;
 import com.sorokaandriy.product_service.exception.CategoryNotFoundException;
+import com.sorokaandriy.product_service.exception.ProductNotFoundException;
+import com.sorokaandriy.product_service.exception.ProductPurchaseException;
 import com.sorokaandriy.product_service.product.Product;
 import com.sorokaandriy.product_service.repository.CategoryRepository;
 import com.sorokaandriy.product_service.repository.ProductRepository;
@@ -13,6 +15,8 @@ import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -37,8 +41,37 @@ public class ProductService {
         return mapper.fromProductToProductResponse(product,category);
     }
 
-    public @Nullable List<ProductPurchaseResponse> purchase(List<ProductPurchaseRequest> requests) {
-        return null;
+    public @Nullable List<ProductPurchaseResponse> purchase(List<ProductPurchaseRequest> request) {
+        List<Long> productIds = request.stream().map(pr -> pr.id()).toList();
+        List<Product> storedProducts = productRepository.findAllByIdInOrderById(productIds);
+        if (productIds.size() != storedProducts.size()){
+            throw new ProductNotFoundException("Product with specified id not found");
+        }
+
+        List<ProductPurchaseRequest> storedRequest = request
+                .stream()
+                .sorted(Comparator.comparing(ProductPurchaseRequest::id))
+                .toList();
+
+        List<ProductPurchaseResponse> purchasedProducts = new ArrayList<>();
+        for (int i = 0; i < storedProducts.size(); i++) {
+            Product product = storedProducts.get(i);
+            ProductPurchaseRequest purchaseRequest = storedRequest.get(i);
+            if (product.getAvailableQuantity() < purchaseRequest.availableQuantity()){
+                throw new ProductPurchaseException("Insufficient stock quantity for product" +
+                        " with id " + product.getId());
+            }
+
+            double availableQuantity = product.getAvailableQuantity() - purchaseRequest.availableQuantity();
+            product.setAvailableQuantity(availableQuantity);
+            productRepository.save(product);
+
+            purchasedProducts.set(i, mapper.fromProductToProductPurchaseResponse(product,purchaseRequest.availableQuantity()));
+
+
+        }
+
+        return purchasedProducts;
     }
 
     public @Nullable ProductResponse findById(Long id) {
