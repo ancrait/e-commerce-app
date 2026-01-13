@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS product
     id BIGINT NOT NULL PRIMARY KEY,
     name VARCHAR(255),
     description VARCHAR(255),
+
     available_quantity DOUBLE PRECISION NOT NULL,
     price numeric(38,2),
     category_id BIGINT,

@@ -57,17 +57,16 @@ public class ProductService {
         for (int i = 0; i < storedProducts.size(); i++) {
             Product product = storedProducts.get(i);
             ProductPurchaseRequest purchaseRequest = storedRequest.get(i);
-            if (product.getAvailableQuantity() < purchaseRequest.availableQuantity()){
+            if (product.getAvailableQuantity() < purchaseRequest.quantity()){
                 throw new ProductPurchaseException("Insufficient stock quantity for product" +
                         " with id " + product.getId());
             }
 
-            double availableQuantity = product.getAvailableQuantity() - purchaseRequest.availableQuantity();
+            double availableQuantity = product.getAvailableQuantity() - purchaseRequest.quantity();
             product.setAvailableQuantity(availableQuantity);
             productRepository.save(product);
 
-            purchasedProducts.set(i, mapper.fromProductToProductPurchaseResponse(product,purchaseRequest.availableQuantity()));
-
+            purchasedProducts.set(i, mapper.fromProductToProductPurchaseResponse(product,purchaseRequest.quantity()));
 
         }
 
@@ -75,10 +74,23 @@ public class ProductService {
     }
 
     public @Nullable ProductResponse findById(Long id) {
-        return null;
+        Product product =  productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product with id " + id +
+                " not found") );
+        Category category = categoryRepository.findById(product.getCategory().getId())
+                .orElseThrow(() -> new CategoryNotFoundException("Category with id " + product.getCategory().getId()
+                        + " not found"));
+        return mapper.fromProductToProductResponse(product,category);
     }
 
     public @Nullable List<ProductResponse> findAll() {
-        return null;
+        List<Product> products = productRepository.findAll();
+        List<ProductResponse> productResponses = new ArrayList<>();
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            Category category = products.get(i).getCategory();
+            productResponses.add(i,mapper.fromProductToProductResponse(product,category));
+        }
+
+        return productResponses;
     }
 }
