@@ -24,7 +24,8 @@ public class ProductMapper {
                 .build();
     }
 
-    public @Nullable ProductResponse fromProductToProductResponse(Product product,Category category) {
+
+    public @Nullable ProductResponse fromProductToProductResponse(Product product, Category category) {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())
@@ -34,6 +35,8 @@ public class ProductMapper {
                 .category(category)
                 .build();
     }
+
+
 
     public ProductPurchaseResponse fromProductToProductPurchaseResponse(Product product, @NotNull(message = "Quantity is mandatory") double quantity) {
         return ProductPurchaseResponse.builder()
