@@ -72,7 +72,7 @@ public class CustomerService {
     public CustomerResponse findCustomerById(String id) {
         return repository.findById(id)
                 .map(c -> mapper.fromCustomerToCustomerResponse(c))
-                .orElseThrow(() -> new CustomerNotFoundException("Cannot update customer " + id
+                .orElseThrow(() -> new CustomerNotFoundException("Cannot find customer " + id
                         + " no found customer with this id"));
     }
 
