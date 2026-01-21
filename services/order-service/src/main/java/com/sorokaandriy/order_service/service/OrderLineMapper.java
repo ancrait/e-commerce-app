@@ -1,6 +1,7 @@
 package com.sorokaandriy.order_service.service;
 
 import com.sorokaandriy.order_service.dto.OrderLineRequest;
+import com.sorokaandriy.order_service.dto.OrderLineResponse;
 import com.sorokaandriy.order_service.model.Order;
 import com.sorokaandriy.order_service.model.OrderLine;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,14 @@ public class OrderLineMapper {
                                 .build()
                 )
                 .productId(orderLineRequest.productsId())
+                .build();
+    }
+
+    public OrderLineResponse fromOrderLineToOrderLineResponse(OrderLine orderLine) {
+        return OrderLineResponse.builder()
+                .id(orderLine.getId())
+                .productId(orderLine.getProductId())
+                .quantity(orderLine.getQuantity())
                 .build();
     }
 }

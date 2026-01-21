@@ -31,7 +31,16 @@ public class OrderMapper {
                 .amount(request.amount())
                 .paymentMethod(request.paymentMethod())
                 .customerId(request.customerId())
-                .products(request.products())
+                .build();
+    }
+
+    public OrderResponse fromOrderToOrderResponse(Order order) {
+        return OrderResponse.builder()
+                .id(order.getId())
+                .reference(order.getReference())
+                .amount(order.getTotalAmount())
+                .paymentMethod(order.getPaymentMethod())
+                .customerId(order.getCustomerId())
                 .build();
     }
 }

@@ -1,23 +1,23 @@
 package com.sorokaandriy.order_service.service;
 
-import com.sorokaandriy.order_service.customer.CustomerResponse;
 import com.sorokaandriy.order_service.dto.OrderLineRequest;
 import com.sorokaandriy.order_service.dto.PurchaseRequest;
 import com.sorokaandriy.order_service.exception.BusinessException;
 import com.sorokaandriy.order_service.customer.CustomerClient;
 import com.sorokaandriy.order_service.dto.OrderRequest;
 import com.sorokaandriy.order_service.dto.OrderResponse;
+import com.sorokaandriy.order_service.exception.OrderNotFoundException;
 import com.sorokaandriy.order_service.kafka.OrderConfirmation;
 import com.sorokaandriy.order_service.kafka.OrderProducer;
 import com.sorokaandriy.order_service.model.Order;
 import com.sorokaandriy.order_service.product.ProductClient;
-import com.sorokaandriy.order_service.product.PurchaseResponse;
 import com.sorokaandriy.order_service.repository.OrderRepository;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -77,4 +77,15 @@ public class OrderService {
     }
 
 
+    public @Nullable List<OrderResponse> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(order -> mapper.fromOrderToOrderResponse(order))
+                .collect(Collectors.toList());
+    }
+
+    public OrderResponse findAllById(Long id) {
+        return mapper.fromOrderToOrderResponse(orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + "doesnt exists")));
+    }
 }
