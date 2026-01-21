@@ -2,6 +2,7 @@ package com.sorokaandriy.order_service.service;
 
 import com.sorokaandriy.order_service.customer.CustomerResponse;
 import com.sorokaandriy.order_service.dto.OrderRequest;
+import com.sorokaandriy.order_service.dto.OrderResponse;
 import com.sorokaandriy.order_service.model.Order;
 import com.sorokaandriy.order_service.product.PurchaseResponse;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,16 @@ public class OrderMapper {
                 .totalAmount(orderRequest.amount())
                 .build();
 
+    }
+
+    public OrderResponse fromOrderRequestToOrderResponse(OrderRequest request){
+        return OrderResponse.builder()
+                .id(request.id())
+                .reference(request.reference())
+                .amount(request.amount())
+                .paymentMethod(request.paymentMethod())
+                .customerId(request.customerId())
+                .products(request.products())
+                .build();
     }
 }
