@@ -8,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderLineService {
@@ -31,6 +32,7 @@ public class OrderLineService {
     public @Nullable List<OrderLineResponse> findByOrderId(Long orderId) {
         return repository.findAllByOrderId(orderId)
                 .stream()
-                .map(orderLine -> mapper.fromOrderLineToOrderLineResponse(orderLine));
+                .map(orderLine -> mapper.fromOrderLineToOrderLineResponse(orderLine))
+                .collect(Collectors.toList());
     }
 }
