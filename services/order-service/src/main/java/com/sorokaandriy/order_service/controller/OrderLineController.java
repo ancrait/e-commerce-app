@@ -24,7 +24,9 @@ public class OrderLineController {
     @GetMapping("/order/{order-id}")
     public ResponseEntity<List<OrderLineResponse>> findByOrderId(
             @PathVariable("order-id") Long orderId){
-        ResponseEntity.ok(orderLineService.findByOrderId(orderId));
+        return ResponseEntity.ok(orderLineService.findByOrderId(orderId));
     }
+
+
 
 }
