@@ -1,15 +1,13 @@
 package com.sorokaandriy.order_service.service;
 
-import com.sorokaandriy.order_service.dto.OrderLineRequest;
-import com.sorokaandriy.order_service.dto.PurchaseRequest;
+import com.sorokaandriy.order_service.dto.*;
 import com.sorokaandriy.order_service.exception.BusinessException;
 import com.sorokaandriy.order_service.customer.CustomerClient;
-import com.sorokaandriy.order_service.dto.OrderRequest;
-import com.sorokaandriy.order_service.dto.OrderResponse;
 import com.sorokaandriy.order_service.exception.OrderNotFoundException;
 import com.sorokaandriy.order_service.kafka.OrderConfirmation;
 import com.sorokaandriy.order_service.kafka.OrderProducer;
 import com.sorokaandriy.order_service.model.Order;
+import com.sorokaandriy.order_service.payment.PaymentClient;
 import com.sorokaandriy.order_service.product.ProductClient;
 import com.sorokaandriy.order_service.repository.OrderRepository;
 import jakarta.validation.Valid;
@@ -25,15 +23,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerClient customerClient;
     private final ProductClient productClient;
+    private final PaymentClient paymentClient;
     private final OrderMapper mapper;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
 
 
-    public OrderService(OrderRepository orderRepository, CustomerClient customerClient, ProductClient productClient, OrderMapper mapper, OrderLineService orderLineService, OrderProducer orderProducer){
+    public OrderService(OrderRepository orderRepository, CustomerClient customerClient, ProductClient productClient, PaymentClient paymentClient, OrderMapper mapper, OrderLineService orderLineService, OrderProducer orderProducer){
         this.orderRepository = orderRepository;
         this.customerClient = customerClient;
         this.productClient = productClient;
+        this.paymentClient = paymentClient;
         this.mapper = mapper;
         this.orderLineService = orderLineService;
         this.orderProducer = orderProducer;
@@ -60,7 +60,16 @@ public class OrderService {
             );
         }
 
-        //todo payment process
+        var paymentRequest = paymentClient.createPayment(
+                PaymentRequest.builder()
+                        .amount(orderRequest.amount())
+                        .paymentMethod(orderRequest.paymentMethod())
+                        .orderId(orderRequest.id())
+                        .orderReference(orderRequest.reference())
+                        .customer(customer)
+                        .build()
+        );
+
 
         orderProducer.sendOrderConfirmation(
                 new OrderConfirmation(
