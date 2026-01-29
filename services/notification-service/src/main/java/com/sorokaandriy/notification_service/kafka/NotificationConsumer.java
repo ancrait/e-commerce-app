@@ -23,7 +23,7 @@ public class NotificationConsumer {
         this.emailService = emailService;
     }
 
-    @KafkaListener(topics = "payment-topic")
+    @KafkaListener(topics = "payment-topic", groupId = "paymentGroup")
     public void consumePaymentSuccessNotification(PaymentConfirmation paymentConfirmation) throws MessagingException {
         log.info("Consuming the message from payment-topic {}", paymentConfirmation);
         notificationRepository.save(
@@ -43,7 +43,7 @@ public class NotificationConsumer {
     }
 
 
-    @KafkaListener(topics = "order-topic")
+    @KafkaListener(topics = "order-topic", groupId = "consumerGroup")
     public void consumeOrderSuccessesNotification(OrderConfirmation orderConfirmation) throws MessagingException {
         log.info("Consuming the message from order-topic {}", orderConfirmation);
         notificationRepository.save(
