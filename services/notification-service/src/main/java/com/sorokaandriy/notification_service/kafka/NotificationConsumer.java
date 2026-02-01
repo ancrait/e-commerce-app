@@ -54,9 +54,9 @@ public class NotificationConsumer {
                         .build()
         );
 
-        String fullName = orderConfirmation.customer().firstname() + " " + orderConfirmation.customer().lastname();
+        String fullName = orderConfirmation.customerResponse().firstname() + " " + orderConfirmation.customerResponse().lastname();
         emailService.sendOrderSuccessEmail(
-                orderConfirmation.customer().email(),
+                orderConfirmation.customerResponse().email(),
                 fullName,
                 orderConfirmation.totalAmount(),
                 orderConfirmation.orderReference(),
