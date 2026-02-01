@@ -66,7 +66,7 @@ public class ProductService {
             product.setAvailableQuantity(availableQuantity);
             productRepository.save(product);
 
-            purchasedProducts.set(i, mapper.fromProductToProductPurchaseResponse(product,purchaseRequest.quantity()));
+            purchasedProducts.add(i, mapper.fromProductToProductPurchaseResponse(product,purchaseRequest.quantity()));
 
         }
 

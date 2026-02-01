@@ -1,0 +1,5 @@
+CREATE DATABASE "payment";
+CREATE DATABASE "order";
+CREATE DATABASE "product";
+CREATE DATABASE "customer";
+CREATE DATABASE "notification";

@@ -22,6 +22,7 @@ import java.util.Map;
 public class Order {
 
     @Id
+    @GeneratedValue
     private Long id;
     private String reference;
     private BigDecimal totalAmount;
