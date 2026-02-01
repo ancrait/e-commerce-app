@@ -1,10 +1,7 @@
 package com.sorokaandriy.order_service.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @AllArgsConstructor
@@ -16,6 +13,7 @@ import lombok.*;
 public class OrderLine {
 
     @Id
+    @GeneratedValue
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_id")

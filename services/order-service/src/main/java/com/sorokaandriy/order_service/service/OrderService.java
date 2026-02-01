@@ -11,6 +11,7 @@ import com.sorokaandriy.order_service.payment.PaymentClient;
 import com.sorokaandriy.order_service.product.ProductClient;
 import com.sorokaandriy.order_service.repository.OrderRepository;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -43,11 +45,14 @@ public class OrderService {
         // OpenFeign
         var customer = customerClient.findById(orderRequest.customerId())
                 .orElseThrow(() -> new BusinessException("Cannot create order, no customer exists with provided id " +
-                       orderRequest.customerId()));
+                        orderRequest.customerId()));
+
         // RestTemplate
         var purchaseProducts = productClient.purchaseProducts(orderRequest.products());
 
+
         Order order = orderRepository.save(mapper.fromOrderRequestToOrder(orderRequest));
+
 
         for (PurchaseRequest purchaseRequest: orderRequest.products()){
             orderLineService.saveOrderLine(
@@ -60,15 +65,19 @@ public class OrderService {
             );
         }
 
+        log.info("{}", customer);
+        log.info("{}", purchaseProducts);
+
         var paymentRequest = paymentClient.createPayment(
                 PaymentRequest.builder()
                         .amount(orderRequest.amount())
                         .paymentMethod(orderRequest.paymentMethod())
-                        .orderId(orderRequest.id())
+                        .orderId(order.getId())
                         .orderReference(orderRequest.reference())
                         .customer(customer)
                         .build()
         );
+
 
 
         orderProducer.sendOrderConfirmation(
@@ -81,20 +90,19 @@ public class OrderService {
                 )
         );
 
-        return mapper.fromOrderRequestToOrderResponse(orderRequest);
-
+        return mapper.fromOrderToOrderResponse(order);
     }
 
 
     public @Nullable List<OrderResponse> findAll() {
         return orderRepository.findAll()
                 .stream()
-                .map(order -> mapper.fromOrderToOrderResponse(order))
+                .map(mapper::fromOrderToOrderResponse)
                 .collect(Collectors.toList());
     }
 
     public OrderResponse findAllById(Long id) {
         return mapper.fromOrderToOrderResponse(orderRepository.findById(id)
-                .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + "doesnt exists")));
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + id + " doesn't exist")));
     }
 }
