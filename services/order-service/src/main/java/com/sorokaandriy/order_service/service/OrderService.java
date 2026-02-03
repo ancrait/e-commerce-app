@@ -1,5 +1,6 @@
 package com.sorokaandriy.order_service.service;
 
+import com.sorokaandriy.order_service.customer.CustomerResponse;
 import com.sorokaandriy.order_service.dto.*;
 import com.sorokaandriy.order_service.exception.BusinessException;
 import com.sorokaandriy.order_service.customer.CustomerClient;
@@ -9,6 +10,7 @@ import com.sorokaandriy.order_service.kafka.OrderProducer;
 import com.sorokaandriy.order_service.model.Order;
 import com.sorokaandriy.order_service.payment.PaymentClient;
 import com.sorokaandriy.order_service.product.ProductClient;
+import com.sorokaandriy.order_service.product.PurchaseResponse;
 import com.sorokaandriy.order_service.repository.OrderRepository;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +45,12 @@ public class OrderService {
 
     public @Nullable OrderResponse createOrder(@Valid OrderRequest orderRequest) {
         // OpenFeign
-        var customer = customerClient.findById(orderRequest.customerId())
+        CustomerResponse customer = customerClient.findById(orderRequest.customerId())
                 .orElseThrow(() -> new BusinessException("Cannot create order, no customer exists with provided id " +
                         orderRequest.customerId()));
 
         // RestTemplate
-        var purchaseProducts = productClient.purchaseProducts(orderRequest.products());
+        List<PurchaseResponse> purchaseProducts = productClient.purchaseProducts(orderRequest.products());
 
 
         Order order = orderRepository.save(mapper.fromOrderRequestToOrder(orderRequest));

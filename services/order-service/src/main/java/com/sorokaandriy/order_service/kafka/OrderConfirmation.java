@@ -12,7 +12,7 @@ public record OrderConfirmation(
         BigDecimal totalAmount,
         PaymentMethod paymentMethod,
         CustomerResponse customerResponse,
-        List<PurchaseResponse> purchaseResponses
+        List<PurchaseResponse> products
 
 ) {
 }
