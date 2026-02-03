@@ -18,7 +18,7 @@ public class NotificationProducer {
     }
 
     public void sendPaymentNotification(PaymentNotificationRequest paymentNotificationRequest){
-        log.info("sending payment notification");
+        log.info("sending payment notification {}", paymentNotificationRequest);
         Message<PaymentNotificationRequest> message = MessageBuilder
                 .withPayload(paymentNotificationRequest)
                 .setHeader(KafkaHeaders.TOPIC,"payment-topic")
