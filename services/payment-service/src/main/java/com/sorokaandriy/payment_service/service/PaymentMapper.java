@@ -33,7 +33,7 @@ public class PaymentMapper {
                 .orderReference(paymentRequest.orderReference())
                 .amount(paymentRequest.amount())
                 .paymentMethod(paymentRequest.paymentMethod())
-                .customerFirstName(paymentRequest.customer().firstname())
+                .customerFirstname(paymentRequest.customer().firstname())
                 .customerLastName(paymentRequest.customer().lastname())
                 .customerEmail(paymentRequest.customer().email())
                 .build();
