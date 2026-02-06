@@ -5,7 +5,7 @@ ARCHITECTURE & SERVICES
     The project consists of the following modules:
     Config Service: Centralized configuration management.
     Discovery Service: Service registration and discovery using Netflix Eureka.
-        Gateway Service: The single entry point into the system.
+    Gateway Service: The single entry point into the system.
     Customer Service: Managing customer data, including profiles and addresses.
     Product Service: Handling the product catalog and inventory levels.
     Order Service: Processing orders and orchestrating the purchase workflow.
