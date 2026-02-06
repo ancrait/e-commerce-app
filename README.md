@@ -1,4 +1,4 @@
-# e-commerce-appE-Commerce Microservices Application
+# e-commerce-app-Ecommerce Microservices Application
 This is a pet project demonstrating a microservices architecture built with Java and Spring Boot. The system follows an Event-Driven Architecture using Apache Kafka and covers a full order processing lifecycle, from customer management to payment notifications.
 
 ARCHITECTURE & SERVICES
